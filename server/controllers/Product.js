@@ -17,7 +17,7 @@ const createProduct = async (req, res) => {
   var newproduct = new Product();
   newproduct.name = req.body.name;
   newproduct.price = req.body.price;
-  newproduct.quality = req.body.quality;
+  newproduct.quantity = req.body.quantity;
   console.log("hello", req.body);
   try {
     await newproduct.save();
@@ -29,12 +29,12 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, price, quality } = req.body;
+  const { name, price, quantity } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send("No Product Found ! ");
 
-  const updatedProduct = { name, price, quality, _id: id };
+  const updatedProduct = { name, price, quantity, _id: id };
 
   await Product.findByIdAndUpdate(id, updatedProduct, { new: true });
   res.json(updatedProduct);

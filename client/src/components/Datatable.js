@@ -1,21 +1,48 @@
 import React, { useEffect, useState } from "react";
 import MaterialTable from "material-table";
+import axios from "axios";
 const DataTable = () => {
   const [data, setData] = useState();
+  const [addFlag, setAddFlag] = useState(false);
   const columns = [
     {
       title: "Name",
-      field: "Name",
+      field: "name",
     },
     {
       title: "Price",
-      field: "Price",
+      field: "price",
     },
     {
-      title: "Quality",
-      field: "Quality",
+      title: "Quantity",
+      field: "quantity",
     },
   ];
+  useEffect(async () => {
+    const products = await axios
+      .get("http://localhost:5000/Product")
+      .then(function (response) {
+        console.log(response);
+        setData(response.data);
+        if (data) {
+          console.log("hedhi data : ", data);
+          setAddFlag(false);
+        }
+      });
+  }, [addFlag]);
+  const deleteProduct = async (id) => {
+    const uri = "http://localhost:5000/Product";
+    await axios
+      .delete(`${uri}/${id}`)
+      .then((response) => console.log(response));
+    setAddFlag(true);
+  };
+  const addProduct = async (product) => {
+    await axios
+      .post("http://localhost:5000/Product/add", product)
+      .then((response) => console.log(response));
+    setAddFlag(true);
+  };
   return (
     <div
       style={{
@@ -34,7 +61,25 @@ const DataTable = () => {
           title="Products List"
           data={data}
           columns={columns}
-          options={{ exportButton: true }}
+          editable={{
+            onRowAdd: (newRow) =>
+              new Promise((resolve, reject) => {
+                console.log(newRow);
+                setTimeout(() => {
+                  addProduct(newRow);
+                  resolve();
+                }, 2000);
+              }),
+            onRowDelete: (selectedRow) =>
+              new Promise((resolve, reject) => {
+                deleteProduct(selectedRow._id);
+                resolve();
+              }),
+          }}
+          options={{
+            actionsColumnIndex: -1,
+            exportButton: true,
+          }}
         />
       </div>
       <br />
