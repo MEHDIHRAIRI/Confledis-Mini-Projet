@@ -8,15 +8,10 @@ function NavBar() {
     <>
       <Navbar bg="dark" variant="dark">
         <Navbar.Brand href="#home">Confledis</Navbar.Brand>
-        <Nav className="mr-auto">
-          <Nav.Link href="#home">Home</Nav.Link>
+        <Nav className="mr-auto" style={{ paddingLeft: "50px" }}>
           <Nav.Link href="/admin">Admin</Nav.Link>
           <Nav.Link href="/client">Client</Nav.Link>
         </Nav>
-        <Form inline>
-          <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-          <Button variant="outline-info">Search</Button>
-        </Form>
       </Navbar>
     </>
   );
