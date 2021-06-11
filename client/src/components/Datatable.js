@@ -22,10 +22,8 @@ const DataTable = () => {
     const products = await axios
       .get("http://localhost:5000/Product")
       .then(function (response) {
-        console.log(response);
         setData(response.data);
         if (data) {
-          console.log("hedhi data : ", data);
           setAddFlag(false);
         }
       });
@@ -41,6 +39,11 @@ const DataTable = () => {
     await axios
       .post("http://localhost:5000/Product/add", product)
       .then((response) => console.log(response));
+    setAddFlag(true);
+  };
+  const updateProduct = async (updated) => {
+    const uri = "http://localhost:5000/Product";
+    await axios.patch(`${uri}/${updated._id}`, updated);
     setAddFlag(true);
   };
   return (
@@ -64,7 +67,6 @@ const DataTable = () => {
           editable={{
             onRowAdd: (newRow) =>
               new Promise((resolve, reject) => {
-                console.log(newRow);
                 setTimeout(() => {
                   addProduct(newRow);
                   resolve();
@@ -73,6 +75,11 @@ const DataTable = () => {
             onRowDelete: (selectedRow) =>
               new Promise((resolve, reject) => {
                 deleteProduct(selectedRow._id);
+                resolve();
+              }),
+            onRowUpdate: (updatedRow, oldRow) =>
+              new Promise((resolve, reject) => {
+                updateProduct(updatedRow);
                 resolve();
               }),
           }}
