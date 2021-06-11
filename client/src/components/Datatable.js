@@ -5,15 +5,15 @@ const DataTable = () => {
   const columns = [
     {
       title: "Name",
-      field: "title",
+      field: "Name",
     },
     {
       title: "Price",
-      field: "field",
+      field: "Price",
     },
     {
       title: "Quality",
-      field: "tutorName",
+      field: "Quality",
     },
   ];
   return (
@@ -27,11 +27,11 @@ const DataTable = () => {
       <br />
       <br />
       <br />
-      <h1 style={{ textAlign: "center" }}>Course List</h1>
+      <h1 style={{ textAlign: "center" }}>Product List</h1>
       <br />
       <div>
         <MaterialTable
-          title="Courses List"
+          title="Products List"
           data={data}
           columns={columns}
           options={{ exportButton: true }}

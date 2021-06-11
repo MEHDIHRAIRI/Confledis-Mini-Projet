@@ -1,53 +1,53 @@
-module.exports = (app) => {
-  const Product = require("../models/Product");
+var Product = require("../models/Product");
+const mongoose = require("mongoose");
+const express = require("express");
 
-  app.get("/allProduct", async function (req, res, next) {
-    await Product.find(function (err, data) {
-      if (err) {
-        console.log(err);
-      }
-      res.json(data);
-    });
-  });
+const getProduct = async (req, res) => {
+  try {
+    const allProducts = await Product.find();
 
-  app.post("/Product/add", async function (req, res) {
-    var Product = new Product();
-    Product.name = req.body.name;
-    Product.price = req.body.price;
-    Product.quality = req.body.quality;
-    //res.send(req.body);
-    try {
-      var Productlog = await Product.save();
-      console.log(Productlog);
-      res.send("Product added");
-    } catch (err) {
-      console.log(err);
-    }
-  });
-
-  app.delete("/Product/delete/:id", async function (req, res) {
-    var id = req.params.id;
-    await Product.findByIdAndRemove(id, function (err, doc) {
-      if (err) {
-        console.log(err);
-      }
-      res.send("Product removed");
-    });
-  });
-
-  // modify Product
-  app.put("/Product/modify/:id", async function (req, res) {
-    var id = req.params.id;
-    await Product.findByIdAndUpdate(
-      id,
-      { $set: req.body },
-      function (err, doc) {
-        if (err) {
-          console.log(err);
-        }
-        res.send("Product updated");
-        console.log(doc);
-      }
-    );
-  });
+    console.log(allProducts);
+    res.status(200).json(allProducts);
+  } catch (error) {
+    res.status(404).json({ message: error.message() });
+  }
 };
+
+const createProduct = async (req, res) => {
+  var newproduct = new Product();
+  newproduct.name = req.body.name;
+  newproduct.price = req.body.price;
+  newproduct.quality = req.body.quality;
+  console.log("hello", req.body);
+  try {
+    await newproduct.save();
+    res.status(200).json(newproduct);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const { name, price, quality } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send("No Product Found ! ");
+
+  const updatedProduct = { name, price, quality, _id: id };
+
+  await Product.findByIdAndUpdate(id, updatedProduct, { new: true });
+  res.json(updatedProduct);
+};
+
+const DeleteProduct = async (req, res) => {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send("No Product Found with id : ${id} ");
+
+  await Product.findByIdAndRemove(id);
+  res.json({ message: "Product deleted successfully." });
+};
+
+module.exports = { getProduct, createProduct, updateProduct, DeleteProduct };

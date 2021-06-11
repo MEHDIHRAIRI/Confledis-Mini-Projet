@@ -3,8 +3,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const router = require("./routes/Product");
+const bodyParser = require("body-parser");
 const app = express();
 app.use(cors());
+
+app.use(bodyParser.json({ limit: "30mb", extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/Product", router);
 mongoose.connect(process.env.DATABASE_URL, {
